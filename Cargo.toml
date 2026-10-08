@@ -1,0 +1,8 @@
+[package]
+name = "testes"
+version = "0.1.0"
+edition = "2024"
+description = "Core declarations and execution evidence for multidimensional Rust testing"
+publish = false
+
+[dependencies]
