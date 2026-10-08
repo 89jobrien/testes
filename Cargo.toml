@@ -6,3 +6,5 @@ description = "Core declarations and execution evidence for multidimensional Rus
 publish = false
 
 [dependencies]
+miette = "7.6.0"
+thiserror = "2.0.21"

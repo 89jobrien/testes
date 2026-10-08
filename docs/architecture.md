@@ -36,6 +36,8 @@ Start from the existing normal library. Add a procedural-macro crate only when a
 
 Record decisions with context, alternatives, consequences, and validation before implementing changes to:
 
+- Error diagnostics dependency choice — resolved per
+  `docs/decisions/0001-miette-core-error-diagnostics.md` (`miette` + `thiserror` added to core).
 - Macro grammar and hygienic dependency resolution.
 - Async/object-safe port execution.
 - Evidence serialization and schema evolution.

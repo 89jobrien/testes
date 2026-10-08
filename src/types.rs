@@ -34,20 +34,13 @@ string_id!(
     MutationId
 );
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, thiserror::Error, miette::Diagnostic)]
 pub enum IdError {
+    #[error("identifier must not be blank")]
     Empty,
+    #[error("identifier must not contain control characters")]
     ControlCharacter,
 }
-impl fmt::Display for IdError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::Empty => f.write_str("identifier must not be blank"),
-            Self::ControlCharacter => f.write_str("identifier must not contain control characters"),
-        }
-    }
-}
-impl std::error::Error for IdError {}
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum Dimension {
@@ -179,11 +172,15 @@ impl TestSpecification {
         }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, thiserror::Error, miette::Diagnostic)]
 pub enum DeclarationError {
+    #[error("declaration's primary dimension does not match its specification's dimension")]
     DimensionMismatch,
+    #[error("declaration's claim statement must not be blank")]
     EmptyClaim,
+    #[error("duplicate obligation id in claim: {0}")]
     DuplicateObligation(ObligationId),
+    #[error("regression specification's underlying dimension is invalid")]
     InvalidRegressionDimension,
 }
 impl TestDeclaration {
@@ -563,10 +560,15 @@ pub struct EvidenceRecord {
     pub artifacts: Vec<ArtifactReference>,
     pub dimension_evidence: DimensionEvidence,
 }
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, thiserror::Error, miette::Diagnostic)]
 pub enum EvidenceShapeError {
-    InvalidDeclaration(DeclarationError),
+    #[error("evidence record's declaration failed validation: {0}")]
+    InvalidDeclaration(#[source] DeclarationError),
+    #[error("evidence record's dimension does not match its declaration's primary dimension")]
     DimensionMismatch,
+    #[error(
+        "regression payload's underlying execution dimension does not match the declared dimension"
+    )]
     InvalidRegressionPayload,
 }
 impl EvidenceRecord {
@@ -888,5 +890,53 @@ mod tests {
             ],
         };
         assert_eq!(evidence.detection_rate(), Some(0.5));
+    }
+
+    #[test]
+    fn id_error_display_shows_message_for_each_variant() {
+        assert_eq!(IdError::Empty.to_string(), "identifier must not be blank");
+        assert_eq!(
+            IdError::ControlCharacter.to_string(),
+            "identifier must not contain control characters"
+        );
+    }
+
+    #[test]
+    fn declaration_error_display_shows_message_for_each_variant() {
+        assert_eq!(
+            DeclarationError::DimensionMismatch.to_string(),
+            "declaration's primary dimension does not match its specification's dimension"
+        );
+        assert_eq!(
+            DeclarationError::EmptyClaim.to_string(),
+            "declaration's claim statement must not be blank"
+        );
+        assert_eq!(
+            DeclarationError::DuplicateObligation(
+                ObligationId::new("dup").expect("id must not be blank")
+            )
+            .to_string(),
+            "duplicate obligation id in claim: dup"
+        );
+        assert_eq!(
+            DeclarationError::InvalidRegressionDimension.to_string(),
+            "regression specification's underlying dimension is invalid"
+        );
+    }
+
+    #[test]
+    fn evidence_shape_error_display_shows_message_for_each_variant() {
+        assert_eq!(
+            EvidenceShapeError::InvalidDeclaration(DeclarationError::EmptyClaim).to_string(),
+            "evidence record's declaration failed validation: declaration's claim statement must not be blank"
+        );
+        assert_eq!(
+            EvidenceShapeError::DimensionMismatch.to_string(),
+            "evidence record's dimension does not match its declaration's primary dimension"
+        );
+        assert_eq!(
+            EvidenceShapeError::InvalidRegressionPayload.to_string(),
+            "regression payload's underlying execution dimension does not match the declared dimension"
+        );
     }
 }

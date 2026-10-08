@@ -1,24 +1,17 @@
 use crate::types::*;
 use std::time::{Duration, SystemTime};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq, thiserror::Error, miette::Diagnostic)]
 pub enum BackendError {
+    #[error("{reason}")]
     Unsupported { reason: String },
+    #[error("{reason}")]
     InvalidRequest { reason: String },
+    #[error("{reason}")]
     Infrastructure { reason: String },
+    #[error("{reason}")]
     ArtifactFailure { reason: String },
 }
-impl std::fmt::Display for BackendError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Unsupported { reason }
-            | Self::InvalidRequest { reason }
-            | Self::Infrastructure { reason }
-            | Self::ArtifactFailure { reason } => f.write_str(reason),
-        }
-    }
-}
-impl std::error::Error for BackendError {}
 
 /// Assertion violations belong in evidence, not BackendError.
 pub trait TestBackend {
@@ -110,10 +103,13 @@ pub enum GovernanceVerdict {
 pub trait GovernancePolicy {
     fn assess(&self, declaration: &TestDeclaration, claim: &ClaimVerdict) -> GovernanceVerdict;
 }
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq, thiserror::Error, miette::Diagnostic)]
 pub enum CheckFailure {
+    #[error("conformance check violated: {message}")]
     Violation { message: String },
+    #[error("conformance check infrastructure failure: {message}")]
     Infrastructure { message: String },
+    #[error("conformance check inconclusive: {message}")]
     Inconclusive { message: String },
 }
 pub trait CaseContext {
