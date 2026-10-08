@@ -10,12 +10,16 @@ types — not a test runner. The crate's job is to let a project state a verific
 claim and record what was _actually_ executed, without letting a deferral, an
 unavailable capability, or an unimplemented backend silently read as a pass.
 
-**Current state**: dependency-free Rust 2024 library with draft types/traits only
-(`src/types.rs`, `src/traits.rs`). No macros (`unit!`, `property!`, `fuzz!`, `prove!`,
-`conformance!`, `integration!`, `regression!`, `mutate!`), no backends, no tests, no
-CI exist yet — these names are planned API, not implemented symbols. Compilation and
-formatting have not been verified as part of initial publication; do not assume `cargo
-check` passes without running it.
+**Current state**: Rust 2024 library with draft types/traits
+(`src/types.rs`, `src/traits.rs`), now with baseline unit coverage and CI (see
+`.github/workflows/ci.yml`). Core error types (`IdError`, `DeclarationError`,
+`EvidenceShapeError`, `BackendError`, `CheckFailure`) derive `thiserror::Error` +
+`miette::Diagnostic` — `miette`/`thiserror` are the crate's only dependencies, added
+as a recorded exception to the prior std-only preference (see
+`docs/decisions/0001-miette-core-error-diagnostics.md`). No macros (`unit!`,
+`property!`, `fuzz!`, `prove!`, `conformance!`, `integration!`, `regression!`,
+`mutate!`) or backends exist yet — these names are planned API, not implemented
+symbols.
 
 ## Read first
 
@@ -54,8 +58,11 @@ repo; these are the literal commands. No workspace split — one crate, src/ onl
 - `#![forbid(unsafe_code)]` is load-bearing — don't add parent-process env mutation
   helpers or anything requiring `unsafe`.
 - Mutation analysis assesses only checks actually executed, never a hypothetical set.
-- Core must stay std-only: no dependency on project domains, Proptest, Kani,
-  libFuzzer, or cargo-mutants. Backend-specific integration lives outside core.
+- Core avoids dependencies on project domains, Proptest, Kani, libFuzzer, or
+  cargo-mutants — the `miette`/`thiserror` exception for error diagnostics is the
+  one recorded exception (`docs/decisions/0001-miette-core-error-diagnostics.md`);
+  don't add further dependencies without the same kind of recorded decision.
+  Backend-specific integration lives outside core regardless.
 
 ## Architecture
 
