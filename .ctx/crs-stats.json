@@ -1,0 +1,12 @@
+{
+  "blocks": {
+    "no-bash-use-nu": 3,
+    "no-grep-use-tool": 1,
+    "no-cd-use-absolute-paths": 4
+  },
+  "last_seen": {
+    "no-grep-use-tool": 1791482886.42376,
+    "no-cd-use-absolute-paths": 1791483079.555048,
+    "no-bash-use-nu": 1791483146.943988
+  }
+}
