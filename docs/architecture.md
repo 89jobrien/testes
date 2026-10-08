@@ -30,7 +30,14 @@ Trait owners maintain semantic contract suites. Shared infrastructure handles ge
 
 ## Crate evolution
 
-Start from the existing normal library. Add a procedural-macro crate only when a reviewed grammar requires it. Add optional backend packages or an orchestration binary only with an actual implementation need. No package layout beyond the current library is committed.
+The workspace is split into `testes-core` plus one crate per dimension
+(`testes-unit`, `testes-property`, `testes-fuzz`, `testes-model-check`,
+`testes-conformance`, `testes-integration`, `testes-regression`,
+`testes-mutation`), so each dimension can be pulled in independently — see
+`docs/decisions/0003-eight-way-dimension-crate-split.md`. Each dimension crate
+depends only on `testes-core` for now; add a procedural-macro crate or a
+heavier backend dependency only when a reviewed grammar or implementation need
+requires it.
 
 ## Open decisions
 

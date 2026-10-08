@@ -1,0 +1,8 @@
+[package]
+name = "testes-conformance"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+testes-core = { path = "../testes-core" }

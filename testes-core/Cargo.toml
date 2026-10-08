@@ -1,0 +1,10 @@
+[package]
+name = "testes-core"
+version = "0.1.0"
+edition = "2024"
+description = "Core declarations and execution evidence for multidimensional Rust testing"
+publish = false
+
+[dependencies]
+miette = "7.6.0"
+thiserror = "2.0.21"

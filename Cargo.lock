@@ -71,11 +71,67 @@ dependencies = [
 ]
 
 [[package]]
-name = "testes"
+name = "testes-conformance"
+version = "0.1.0"
+dependencies = [
+ "testes-core",
+]
+
+[[package]]
+name = "testes-core"
 version = "0.1.0"
 dependencies = [
  "miette",
  "thiserror",
+]
+
+[[package]]
+name = "testes-fuzz"
+version = "0.1.0"
+dependencies = [
+ "testes-core",
+]
+
+[[package]]
+name = "testes-integration"
+version = "0.1.0"
+dependencies = [
+ "testes-core",
+]
+
+[[package]]
+name = "testes-model-check"
+version = "0.1.0"
+dependencies = [
+ "testes-core",
+]
+
+[[package]]
+name = "testes-mutation"
+version = "0.1.0"
+dependencies = [
+ "testes-core",
+]
+
+[[package]]
+name = "testes-property"
+version = "0.1.0"
+dependencies = [
+ "testes-core",
+]
+
+[[package]]
+name = "testes-regression"
+version = "0.1.0"
+dependencies = [
+ "testes-core",
+]
+
+[[package]]
+name = "testes-unit"
+version = "0.1.0"
+dependencies = [
+ "testes-core",
 ]
 
 [[package]]

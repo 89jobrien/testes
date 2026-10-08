@@ -13,11 +13,18 @@ These instructions apply throughout this repository. Follow more-specific nested
 3. [Architecture decisions](docs/architecture.md)
 4. [Macro implementation plan](docs/macro-plan.md)
 5. [Validation checklist](docs/validation.md)
-6. `src/types.rs` and `src/traits.rs`
+6. `testes-core/src/types.rs` and `testes-core/src/traits.rs`
 
 ## Current state
 
-One dependency-free Rust 2024 library exists. Core structs, enums, traits, and limited validation helpers are drafts. Public test macros, runners, backends, serialization, policy evaluation, and CI are not implemented. No successful compilation or testing was established during initial publication. Verify current state before repeating these statements.
+A Cargo workspace of nine crates: `testes-core` (types, traits, evidence model —
+`miette`/`thiserror` dependency, see ADR-0001) plus one crate per dimension
+(`testes-unit`, `testes-property`, `testes-fuzz`, `testes-model-check`,
+`testes-conformance`, `testes-integration`, `testes-regression`,
+`testes-mutation` — see ADR-0003). Core structs, enums, traits, and limited
+validation helpers are drafts with baseline unit coverage. The eight dimension
+crates exist but contain no macro or backend implementation yet. CI runs
+`--workspace`. Verify current state before repeating these statements.
 
 ## Non-negotiable invariants
 
@@ -40,7 +47,7 @@ For each changed behavior, add unit coverage first; add generated-input, boundar
 
 ## Validation
 
-Run `cargo fmt --check`, `cargo check --all-targets`, `cargo test --all-targets`, `cargo test --doc`, and `cargo clippy --all-targets -- -D warnings` when tooling is available. Record exact results. If tooling is unavailable, report that limitation; do not claim validation. Additional backend checks are defined in docs/validation.md and are not current runnable project commands.
+Run `cargo fmt --check`, `cargo check --workspace --all-targets`, `cargo test --workspace --all-targets`, `cargo test --workspace --doc`, and `cargo clippy --workspace --all-targets -- -D warnings` when tooling is available. Record exact results. If tooling is unavailable, report that limitation; do not claim validation. Additional backend checks are defined in docs/validation.md and are not current runnable project commands.
 
 ## Handoff and completion
 
