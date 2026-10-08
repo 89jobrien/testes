@@ -592,3 +592,301 @@ impl EvidenceRecord {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn claim(statement: &str) -> Claim {
+        Claim {
+            statement: statement.to_string(),
+            obligations: Vec::new(),
+        }
+    }
+
+    fn scope() -> Scope {
+        Scope {
+            input_domain: "test".to_string(),
+            assumptions: Vec::new(),
+            bounds: Vec::new(),
+            capabilities: Vec::new(),
+            resources: ResourceLimits {
+                wall_time: None,
+                memory_bytes: None,
+                max_input_bytes: None,
+            },
+        }
+    }
+
+    fn unit_declaration() -> TestDeclaration {
+        TestDeclaration {
+            id: TestId::new("subject-under-test").expect("id must not be blank"),
+            primary_dimension: Dimension::Unit,
+            secondary_dimensions: Vec::new(),
+            subject: SubjectId::new("subject-under-test").expect("id must not be blank"),
+            claim: claim("example behaves as expected"),
+            required_scope: scope(),
+            disposition: ObligationDisposition::Required,
+            specification: TestSpecification::Unit {
+                example_ids: vec!["example".to_string()],
+            },
+        }
+    }
+
+    fn execution_metadata() -> ExecutionMetadata {
+        ExecutionMetadata {
+            backend: BackendIdentity {
+                name: "test-backend".to_string(),
+                version: "0.0.0".to_string(),
+                toolchain: None,
+            },
+            configuration: BackendConfiguration::new(),
+            started_at: SystemTime::UNIX_EPOCH,
+            duration: Duration::ZERO,
+            actual_scope: scope(),
+        }
+    }
+
+    fn passing_outcome() -> ExecutionOutcome {
+        ExecutionOutcome {
+            status: ExecutionStatus::Passed,
+            reason: OutcomeReason::AssertionsSatisfied,
+            diagnostic: None,
+            obligations: Vec::new(),
+        }
+    }
+
+    #[test]
+    fn string_id_rejects_blank_value() {
+        let result = TestId::new("   ");
+        assert_eq!(result, Err(IdError::Empty));
+    }
+
+    #[test]
+    fn string_id_rejects_control_characters() {
+        let result = TestId::new("abc\u{0007}def");
+        assert_eq!(result, Err(IdError::ControlCharacter));
+    }
+
+    #[test]
+    fn string_id_accepts_valid_value() {
+        let id = TestId::new("valid-id").expect("valid id must construct");
+        assert_eq!(id.as_str(), "valid-id");
+    }
+
+    #[test]
+    fn declaration_validate_rejects_dimension_mismatch() {
+        let mut declaration = unit_declaration();
+        declaration.primary_dimension = Dimension::Property;
+        assert_eq!(
+            declaration.validate(),
+            Err(DeclarationError::DimensionMismatch)
+        );
+    }
+
+    #[test]
+    fn declaration_validate_rejects_empty_claim() {
+        let mut declaration = unit_declaration();
+        declaration.claim = claim("   ");
+        assert_eq!(declaration.validate(), Err(DeclarationError::EmptyClaim));
+    }
+
+    #[test]
+    fn declaration_validate_rejects_duplicate_obligation_ids() {
+        let mut declaration = unit_declaration();
+        let obligation_id = ObligationId::new("dup").expect("id must not be blank");
+        declaration.claim.obligations = vec![
+            ObligationDefinition {
+                id: obligation_id.clone(),
+                description: "first".to_string(),
+            },
+            ObligationDefinition {
+                id: obligation_id.clone(),
+                description: "second".to_string(),
+            },
+        ];
+        assert_eq!(
+            declaration.validate(),
+            Err(DeclarationError::DuplicateObligation(obligation_id))
+        );
+    }
+
+    #[test]
+    fn declaration_validate_rejects_regression_wrapping_mutation() {
+        let mut declaration = unit_declaration();
+        declaration.primary_dimension = Dimension::Regression;
+        declaration.specification = TestSpecification::Regression {
+            failure: FailureId::new("failure").expect("id must not be blank"),
+            underlying_dimension: Dimension::Mutation,
+            reproducer_artifacts: Vec::new(),
+        };
+        assert_eq!(
+            declaration.validate(),
+            Err(DeclarationError::InvalidRegressionDimension)
+        );
+    }
+
+    #[test]
+    fn declaration_validate_accepts_well_formed_declaration() {
+        assert_eq!(unit_declaration().validate(), Ok(()));
+    }
+
+    #[test]
+    fn evidence_validate_shape_rejects_dimension_mismatch_with_evidence() {
+        let record = EvidenceRecord {
+            schema_version: 1,
+            declaration: unit_declaration(),
+            provenance: Provenance {
+                run_id: RunId::new("run").expect("id must not be blank"),
+                revision: RepositoryRevision {
+                    repository: "testes".to_string(),
+                    commit: "0000000".to_string(),
+                    working_tree: WorkingTreeState::Clean,
+                },
+            },
+            execution: execution_metadata(),
+            outcome: passing_outcome(),
+            artifacts: Vec::new(),
+            dimension_evidence: DimensionEvidence::Property(PropertyEvidence {
+                strategy_id: "wrong-dimension".to_string(),
+                seed: Observed::Unavailable {
+                    reason: "not applicable".to_string(),
+                },
+                completed_cases: 0,
+                rejected_cases: Observed::Unavailable {
+                    reason: "not applicable".to_string(),
+                },
+                replayed_artifacts: Vec::new(),
+                minimized_counterexample: None,
+            }),
+        };
+        assert_eq!(
+            record.validate_shape(),
+            Err(EvidenceShapeError::DimensionMismatch)
+        );
+    }
+
+    #[test]
+    fn evidence_validate_shape_rejects_regression_payload_dimension_mismatch() {
+        let mut declaration = unit_declaration();
+        declaration.primary_dimension = Dimension::Regression;
+        declaration.specification = TestSpecification::Regression {
+            failure: FailureId::new("failure").expect("id must not be blank"),
+            underlying_dimension: Dimension::Unit,
+            reproducer_artifacts: Vec::new(),
+        };
+        let record = EvidenceRecord {
+            schema_version: 1,
+            declaration,
+            provenance: Provenance {
+                run_id: RunId::new("run").expect("id must not be blank"),
+                revision: RepositoryRevision {
+                    repository: "testes".to_string(),
+                    commit: "0000000".to_string(),
+                    working_tree: WorkingTreeState::Clean,
+                },
+            },
+            execution: execution_metadata(),
+            outcome: passing_outcome(),
+            artifacts: Vec::new(),
+            dimension_evidence: DimensionEvidence::Regression(RegressionEvidence {
+                failure: FailureId::new("failure").expect("id must not be blank"),
+                reproducer_artifacts: Vec::new(),
+                historical_failure: None,
+                execution: Box::new(DimensionEvidence::Property(PropertyEvidence {
+                    strategy_id: "mismatched-underlying-dimension".to_string(),
+                    seed: Observed::Unavailable {
+                        reason: "not applicable".to_string(),
+                    },
+                    completed_cases: 0,
+                    rejected_cases: Observed::Unavailable {
+                        reason: "not applicable".to_string(),
+                    },
+                    replayed_artifacts: Vec::new(),
+                    minimized_counterexample: None,
+                })),
+            }),
+        };
+        assert_eq!(
+            record.validate_shape(),
+            Err(EvidenceShapeError::InvalidRegressionPayload)
+        );
+    }
+
+    #[test]
+    fn mutation_detection_rate_is_none_when_nothing_assessed() {
+        let evidence = MutationEvidence {
+            source_selectors: Vec::new(),
+            operators: Vec::new(),
+            selected_checks: Vec::new(),
+            commands: Vec::new(),
+            baseline: passing_outcome(),
+            mutations: vec![MutationResult {
+                mutation: MutationDefinition {
+                    id: MutationId::new("m1").expect("id must not be blank"),
+                    location: "src/lib.rs:1".to_string(),
+                    operator: "delete-statement".to_string(),
+                    transformation: "removed statement".to_string(),
+                },
+                outcome: MutationOutcome::Unviable {
+                    diagnostic: "did not compile".to_string(),
+                },
+                duration: Duration::ZERO,
+                artifacts: Vec::new(),
+            }],
+        };
+        assert_eq!(evidence.detection_rate(), None);
+    }
+
+    #[test]
+    fn mutation_detection_rate_handles_mixed_outcomes() {
+        let evidence = MutationEvidence {
+            source_selectors: Vec::new(),
+            operators: Vec::new(),
+            selected_checks: Vec::new(),
+            commands: Vec::new(),
+            baseline: passing_outcome(),
+            mutations: vec![
+                MutationResult {
+                    mutation: MutationDefinition {
+                        id: MutationId::new("caught").expect("id must not be blank"),
+                        location: "src/lib.rs:1".to_string(),
+                        operator: "delete-statement".to_string(),
+                        transformation: "removed statement".to_string(),
+                    },
+                    outcome: MutationOutcome::Caught {
+                        detecting_checks: Observed::Available(Vec::new()),
+                        diagnostic: None,
+                    },
+                    duration: Duration::ZERO,
+                    artifacts: Vec::new(),
+                },
+                MutationResult {
+                    mutation: MutationDefinition {
+                        id: MutationId::new("missed").expect("id must not be blank"),
+                        location: "src/lib.rs:2".to_string(),
+                        operator: "delete-statement".to_string(),
+                        transformation: "removed statement".to_string(),
+                    },
+                    outcome: MutationOutcome::Missed,
+                    duration: Duration::ZERO,
+                    artifacts: Vec::new(),
+                },
+                MutationResult {
+                    mutation: MutationDefinition {
+                        id: MutationId::new("timeout").expect("id must not be blank"),
+                        location: "src/lib.rs:3".to_string(),
+                        operator: "delete-statement".to_string(),
+                        transformation: "removed statement".to_string(),
+                    },
+                    outcome: MutationOutcome::Timeout {
+                        limit: Duration::from_secs(1),
+                    },
+                    duration: Duration::ZERO,
+                    artifacts: Vec::new(),
+                },
+            ],
+        };
+        assert_eq!(evidence.detection_rate(), Some(0.5));
+    }
+}

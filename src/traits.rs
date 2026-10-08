@@ -159,3 +159,40 @@ pub struct CaseTiming {
     pub execution: Duration,
     pub cleanup: Duration,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn backend_error_display_shows_reason_for_each_variant() {
+        assert_eq!(
+            BackendError::Unsupported {
+                reason: "no fuzz toolchain".to_string()
+            }
+            .to_string(),
+            "no fuzz toolchain"
+        );
+        assert_eq!(
+            BackendError::InvalidRequest {
+                reason: "missing subject".to_string()
+            }
+            .to_string(),
+            "missing subject"
+        );
+        assert_eq!(
+            BackendError::Infrastructure {
+                reason: "process spawn failed".to_string()
+            }
+            .to_string(),
+            "process spawn failed"
+        );
+        assert_eq!(
+            BackendError::ArtifactFailure {
+                reason: "digest mismatch".to_string()
+            }
+            .to_string(),
+            "digest mismatch"
+        );
+    }
+}
