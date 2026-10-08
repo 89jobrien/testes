@@ -16,7 +16,7 @@ unavailable capability, or an unimplemented backend silently read as a pass.
 `EvidenceShapeError`, `BackendError`, `CheckFailure`) derive `thiserror::Error` +
 `miette::Diagnostic` — `miette`/`thiserror` are the crate's only dependencies, added
 as a recorded exception to the prior std-only preference (see
-`docs/decisions/0001-miette-core-error-diagnostics.md`). No macros (`unit!`,
+`docs/decisions/0001-layered-dependencies-and-native-testing-backends.md`). No macros (`unit!`,
 `property!`, `fuzz!`, `prove!`, `conformance!`, `integration!`, `regression!`,
 `mutate!`) or backends exist yet — these names are planned API, not implemented
 symbols.
@@ -60,7 +60,7 @@ repo; these are the literal commands. No workspace split — one crate, src/ onl
 - Mutation analysis assesses only checks actually executed, never a hypothetical set.
 - Core avoids dependencies on project domains, Proptest, Kani, libFuzzer, or
   cargo-mutants — the `miette`/`thiserror` exception for error diagnostics is the
-  one recorded exception (`docs/decisions/0001-miette-core-error-diagnostics.md`);
+  one recorded exception (`docs/decisions/0001-layered-dependencies-and-native-testing-backends.md`);
   don't add further dependencies without the same kind of recorded decision.
   Backend-specific integration lives outside core regardless.
 

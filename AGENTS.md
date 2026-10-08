@@ -34,7 +34,7 @@ One dependency-free Rust 2024 library exists. Core structs, enums, traits, and l
 
 ## Working conventions
 
-Use small design-gated changes. Record material API decisions before implementation. Prefer std-only core logic; justify dependencies and crate splits (see `docs/decisions/0001-miette-core-error-diagnostics.md` for the recorded `miette`/`thiserror` exception). Keep orchestration and heavyweight tools outside core. Avoid unrelated refactors. Use fakes over elaborate mocks when direct values suffice. Give fallible test setup contextual `expect` messages rather than unexplained `unwrap`.
+Use small design-gated changes. Record material API decisions before implementation. Prefer std-only core logic; justify dependencies and crate splits (see `docs/decisions/0001-layered-dependencies-and-native-testing-backends.md` for the recorded `miette`/`thiserror` exception). Keep orchestration and heavyweight tools outside core. Avoid unrelated refactors. Use fakes over elaborate mocks when direct values suffice. Give fallible test setup contextual `expect` messages rather than unexplained `unwrap`.
 
 For each changed behavior, add unit coverage first; add generated-input, boundary, proof, conformance, integration, or regression checks as relevant. Do not substitute a checklist of test attributes for executed evidence. Required proof policy is an open owner decision; do not silently adopt a blanket rule or wait-for-a-bug rule.
 
