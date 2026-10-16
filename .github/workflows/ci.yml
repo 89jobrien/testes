@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 permissions:
   contents: read
@@ -33,13 +33,13 @@ jobs:
         run: cargo fmt --check
 
       - name: Check
-        run: cargo check --all-targets
+        run: cargo check --workspace --all-targets
 
       - name: Test
-        run: cargo test --all-targets
+        run: cargo test --workspace --all-targets
 
       - name: Doc tests
-        run: cargo test --doc
+        run: cargo test --workspace --doc
 
       - name: Clippy
-        run: cargo clippy --all-targets -- -D warnings
+        run: cargo clippy --workspace --all-targets -- -D warnings

@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "algorithm": "sha256-normalized-core-contract-v1",
+  "surfaces": [
+    {
+      "name": "testes-core/types",
+      "path": "testes-core/src/types.rs",
+      "hash": "aa9316d58b515242cab55b935cfde23d85025dc65105e294728211e895c0dd8e"
+    }
+  ]
+}

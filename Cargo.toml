@@ -1,10 +1,13 @@
-[package]
-name = "testes"
-version = "0.1.0"
-edition = "2024"
-description = "Core declarations and execution evidence for multidimensional Rust testing"
-publish = false
-
-[dependencies]
-miette = "7.6.0"
-thiserror = "2.0.21"
+[workspace]
+resolver = "2"
+members = [
+    "testes-core",
+    "testes-unit",
+    "testes-property",
+    "testes-fuzz",
+    "testes-model-check",
+    "testes-conformance",
+    "testes-integration",
+    "testes-regression",
+    "testes-mutation",
+]

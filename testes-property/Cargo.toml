@@ -1,0 +1,10 @@
+[package]
+name = "testes-property"
+version = "0.2.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+testes-core = { path = "../testes-core" }
+proptest = "1.4"
+paste = "1.0"
