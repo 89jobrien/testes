@@ -1,6 +1,143 @@
-//! `testes-conformance` owns the `conformance!` dimension — a generic runner;
-//! concrete conformance cases stay project-owned per `docs/README.md`'s
-//! ownership model.
-//!
-//! No macro or backend is implemented yet — see ADR-0003 for the crate-split
-//! rationale and ADR-0001 for the dimension's design status.
+//! `testes-conformance` owns the `conformance!` macro.
+
+#![forbid(unsafe_code)]
+
+use std::cell::RefCell;
+pub use testes_core::{
+    BackendConfiguration, BackendIdentity, Claim, ConformanceEvidence, Dimension,
+    DimensionEvidence, EvidenceRecord, ExecutionMetadata, ExecutionOutcome, ExecutionStatus,
+    IdError, ObligationDisposition, ObligationId, Observed, OutcomeReason, Provenance,
+    RepositoryRevision, ResourceLimits, RunId, Scope, SubjectId, TestDeclaration, TestId,
+    TestSpecification, WorkingTreeState,
+};
+
+thread_local! {
+    pub static LAST_CONFORMANCE_EVIDENCE: RefCell<Option<(TestId, ConformanceEvidence)>> =
+        const { RefCell::new(None) };
+}
+
+#[macro_export]
+macro_rules! conformance {
+    (
+        id: $id:expr,
+        subject: $subject:expr,
+        claim: $claim:expr,
+        body: $body:block
+        $(,)?
+    ) => {
+        ::paste::paste! {
+            #[test]
+            fn [< $id >]() {
+                let test_id = $crate::TestId::new($id)
+                    .expect("test id must not be blank or contain control characters");
+                let subject_id = $crate::SubjectId::new($subject)
+                    .expect("subject must not be blank or contain control characters");
+
+                let declaration = $crate::TestDeclaration {
+                    id: test_id.clone(),
+                    primary_dimension: $crate::Dimension::Conformance,
+                    secondary_dimensions: Vec::new(),
+                    subject: subject_id,
+                    claim: $crate::Claim {
+                        statement: $claim.to_string(),
+                        obligations: Vec::new(),
+                    },
+                    required_scope: $crate::Scope {
+                        input_domain: "conformance test".to_string(),
+                        assumptions: Vec::new(),
+                        bounds: Vec::new(),
+                        capabilities: Vec::new(),
+                        resources: $crate::ResourceLimits {
+                            wall_time: None,
+                            memory_bytes: None,
+                            max_input_bytes: None,
+                        },
+                    },
+                    disposition: $crate::ObligationDisposition::Required,
+                    specification: $crate::TestSpecification::Conformance {
+                        case_ids: vec![],
+                    },
+                };
+
+                declaration.validate().expect("TestDeclaration must be valid");
+
+                let started_at = std::time::SystemTime::now();
+                let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                    $body
+                }));
+                let duration = started_at.elapsed().unwrap_or(std::time::Duration::ZERO);
+
+                let (status, diagnostic) = match &result {
+                    Ok(_) => ($crate::ExecutionStatus::Passed, None),
+                    Err(e) => ($crate::ExecutionStatus::Failed, Some(format!("{:?}", e))),
+                };
+
+                let conformance_evidence = $crate::ConformanceEvidence {
+                    case_results: vec![],
+                    compliance_rate: $crate::Observed::Unavailable {
+                        reason: "not measured".to_string(),
+                    },
+                };
+
+                let execution_outcome = $crate::ExecutionOutcome {
+                    status,
+                    reason: if status == $crate::ExecutionStatus::Passed {
+                        $crate::OutcomeReason::AssertionsSatisfied
+                    } else {
+                        $crate::OutcomeReason::AssertionViolation
+                    },
+                    diagnostic,
+                    obligations: Vec::new(),
+                };
+
+                let _evidence = $crate::EvidenceRecord {
+                    schema_version: 1,
+                    declaration,
+                    provenance: $crate::Provenance {
+                        run_id: $crate::RunId::new("conformance-run")
+                            .expect("run id valid"),
+                        revision: $crate::RepositoryRevision {
+                            repository: "unknown".to_string(),
+                            commit: "unknown".to_string(),
+                            working_tree: $crate::WorkingTreeState::Unknown,
+                        },
+                    },
+                    execution: $crate::ExecutionMetadata {
+                        backend: $crate::BackendIdentity {
+                            name: "native-conformance".to_string(),
+                            version: env!("CARGO_PKG_VERSION").to_string(),
+                            toolchain: None,
+                        },
+                        configuration: $crate::BackendConfiguration::new(),
+                        started_at,
+                        duration,
+                        actual_scope: $crate::Scope {
+                            input_domain: "conformance test".to_string(),
+                            assumptions: Vec::new(),
+                            bounds: Vec::new(),
+                            capabilities: Vec::new(),
+                            resources: $crate::ResourceLimits {
+                                wall_time: None,
+                                memory_bytes: None,
+                                max_input_bytes: None,
+                            },
+                        },
+                    },
+                    outcome: execution_outcome,
+                    artifacts: Vec::new(),
+                    dimension_evidence: $crate::DimensionEvidence::Conformance(
+                        conformance_evidence.clone(),
+                    ),
+                };
+
+                $crate::LAST_CONFORMANCE_EVIDENCE.with(|e| {
+                    *e.borrow_mut() = Some((test_id, conformance_evidence));
+                });
+
+                if result.is_err() {
+                    panic!("conformance test failed");
+                }
+            }
+        }
+    };
+}

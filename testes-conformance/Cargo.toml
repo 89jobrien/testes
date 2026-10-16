@@ -6,3 +6,4 @@ publish = false
 
 [dependencies]
 testes-core = { path = "../testes-core" }
+paste = "1.0"
