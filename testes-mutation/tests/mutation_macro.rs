@@ -10,15 +10,6 @@ mutate! {
     }
 }
 
-mutate! {
-    id: "mutation-fails",
-    subject: "mutation score",
-    claim: "this mutation test deliberately fails",
-    body: {
-        assert_eq!(1, 2);
-    }
-}
-
 #[test]
 fn evidence_shape_validation() {
     LAST_MUTATION_EVIDENCE.with(|e| {

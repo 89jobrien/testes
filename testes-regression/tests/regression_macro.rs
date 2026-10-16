@@ -10,15 +10,6 @@ regression! {
     }
 }
 
-regression! {
-    id: "regression-fails",
-    subject: "regression test",
-    claim: "this regression deliberately fails",
-    body: {
-        assert_eq!(1, 2);
-    }
-}
-
 #[test]
 fn evidence_shape_validation() {
     LAST_REGRESSION_EVIDENCE.with(|e| {

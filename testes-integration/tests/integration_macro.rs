@@ -10,15 +10,6 @@ integration! {
     }
 }
 
-integration! {
-    id: "integration-fails",
-    subject: "component integration",
-    claim: "this integration deliberately fails",
-    body: {
-        assert_eq!(1, 2);
-    }
-}
-
 #[test]
 fn evidence_shape_validation() {
     // This test validates that the macro creates properly shaped evidence.

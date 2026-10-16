@@ -4,11 +4,12 @@
 
 use std::cell::RefCell;
 pub use testes_core::{
-    BackendConfiguration, BackendIdentity, Claim, ConformanceEvidence, Dimension,
-    DimensionEvidence, EvidenceRecord, ExecutionMetadata, ExecutionOutcome, ExecutionStatus,
-    IdError, ObligationDisposition, ObligationId, Observed, OutcomeReason, Provenance,
-    RepositoryRevision, ResourceLimits, RunId, Scope, SubjectId, TestDeclaration, TestId,
-    TestSpecification, WorkingTreeState,
+    BackendConfiguration, BackendIdentity, Claim, ConformanceEvidence, ContractId,
+    ContractIdentity, Dimension, DimensionEvidence, EvidenceRecord, ExecutionMetadata,
+    ExecutionOutcome, ExecutionStatus, IdError, ImplementationId, ImplementationIdentity,
+    ObligationDisposition, ObligationId, Observed, OutcomeReason, Provenance, RepositoryRevision,
+    ResourceLimits, RunId, Scope, SubjectId, TestDeclaration, TestId, TestSpecification,
+    WorkingTreeState,
 };
 
 thread_local! {
@@ -33,6 +34,11 @@ macro_rules! conformance {
                 let subject_id = $crate::SubjectId::new($subject)
                     .expect("subject must not be blank or contain control characters");
 
+                let contract_id = $crate::ContractId::new($id)
+                    .expect("contract id must be valid");
+                let implementation_id = $crate::ImplementationId::new($id)
+                    .expect("implementation id must be valid");
+
                 let declaration = $crate::TestDeclaration {
                     id: test_id.clone(),
                     primary_dimension: $crate::Dimension::Conformance,
@@ -55,6 +61,14 @@ macro_rules! conformance {
                     },
                     disposition: $crate::ObligationDisposition::Required,
                     specification: $crate::TestSpecification::Conformance {
+                        contract: $crate::ContractIdentity {
+                            id: contract_id.clone(),
+                            version: "0.1.0".to_string(),
+                        },
+                        implementation: $crate::ImplementationIdentity {
+                            id: implementation_id.clone(),
+                            configuration_id: "default".to_string(),
+                        },
                         case_ids: vec![],
                     },
                 };
@@ -73,10 +87,16 @@ macro_rules! conformance {
                 };
 
                 let conformance_evidence = $crate::ConformanceEvidence {
-                    case_results: vec![],
-                    compliance_rate: $crate::Observed::Unavailable {
-                        reason: "not measured".to_string(),
+                    contract: $crate::ContractIdentity {
+                        id: contract_id,
+                        version: "0.1.0".to_string(),
                     },
+                    implementation: $crate::ImplementationIdentity {
+                        id: implementation_id,
+                        configuration_id: "default".to_string(),
+                    },
+                    capabilities: vec![],
+                    cases: vec![],
                 };
 
                 let execution_outcome = $crate::ExecutionOutcome {

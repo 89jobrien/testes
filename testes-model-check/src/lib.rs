@@ -56,6 +56,7 @@ macro_rules! prove {
                     },
                     disposition: $crate::ObligationDisposition::Required,
                     specification: $crate::TestSpecification::ModelCheck {
+                        harness_id: "default-harness".to_string(),
                         obligation_ids: Vec::new(),
                     },
                 };
@@ -68,7 +69,7 @@ macro_rules! prove {
                 }));
                 let duration = started_at.elapsed().unwrap_or(std::time::Duration::ZERO);
 
-                let (status, diagnostic) = match proof_result {
+                let (status, diagnostic) = match &proof_result {
                     Ok(_) => ($crate::ProofStatus::Established, None),
                     Err(e) => (
                         $crate::ProofStatus::Refuted,
@@ -77,7 +78,7 @@ macro_rules! prove {
                 };
 
                 let proof_evidence = $crate::ModelCheckEvidence {
-                    harness_id: "".to_string(),
+                    harness_id: "default-harness".to_string(),
                     symbolic_inputs: Vec::new(),
                     assumptions: Vec::new(),
                     bounds: Vec::new(),
