@@ -400,14 +400,15 @@ dependencies = [
 
 [[package]]
 name = "testes-conformance"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
+ "paste",
  "testes-core",
 ]
 
 [[package]]
 name = "testes-core"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
  "miette",
  "thiserror",
@@ -415,35 +416,40 @@ dependencies = [
 
 [[package]]
 name = "testes-fuzz"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
+ "paste",
+ "proptest",
  "testes-core",
 ]
 
 [[package]]
 name = "testes-integration"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
+ "paste",
  "testes-core",
 ]
 
 [[package]]
 name = "testes-model-check"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
+ "paste",
  "testes-core",
 ]
 
 [[package]]
 name = "testes-mutation"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
+ "paste",
  "testes-core",
 ]
 
 [[package]]
 name = "testes-property"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
  "paste",
  "proptest",
@@ -452,14 +458,15 @@ dependencies = [
 
 [[package]]
 name = "testes-regression"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
+ "paste",
  "testes-core",
 ]
 
 [[package]]
 name = "testes-unit"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
  "paste",
  "testes-core",
