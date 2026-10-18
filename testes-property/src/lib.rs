@@ -59,7 +59,7 @@ macro_rules! property {
         cases: $cases:expr
         $(,)?
     ) => {
-        ::paste::paste! {
+        ::pastey::paste! {
             #[test]
             fn [< $id >]() {
                 use proptest::test_runner::TestRunner;

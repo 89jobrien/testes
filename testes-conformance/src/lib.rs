@@ -26,7 +26,7 @@ macro_rules! conformance {
         body: $body:block
         $(,)?
     ) => {
-        ::paste::paste! {
+        ::pastey::paste! {
             #[test]
             fn [< $id >]() {
                 let test_id = $crate::TestId::new($id)

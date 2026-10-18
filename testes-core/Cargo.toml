@@ -3,6 +3,7 @@ name = "testes-core"
 version = "0.3.0"
 edition = "2024"
 description = "Core declarations and execution evidence for multidimensional Rust testing"
+license = "MIT OR Apache-2.0"
 publish = false
 
 [dependencies]

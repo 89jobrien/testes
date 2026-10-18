@@ -2,8 +2,9 @@
 name = "testes-model-check"
 version = "0.3.0"
 edition = "2024"
+license = "MIT OR Apache-2.0"
 publish = false
 
 [dependencies]
 testes-core = { path = "../testes-core" }
-paste = "1.0"
+pastey = "0.2"

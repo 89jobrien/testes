@@ -17,7 +17,7 @@ thread_local! {
 #[macro_export]
 macro_rules! integration {
     (id: $id:expr, subject: $subject:expr, claim: $claim:expr, body: $body:block $(,)?) => {
-        ::paste::paste! {
+        ::pastey::paste! {
             #[test]
             fn [< $id >]() {
                 let test_id = $crate::TestId::new($id).expect("valid id");

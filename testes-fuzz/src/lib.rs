@@ -58,7 +58,7 @@ macro_rules! fuzz {
         cases: $cases:expr
         $(,)?
     ) => {
-        ::paste::paste! {
+        ::pastey::paste! {
             #[test]
             fn [< $id >]() {
                 use proptest::test_runner::TestRunner;

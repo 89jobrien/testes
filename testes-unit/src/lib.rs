@@ -68,7 +68,7 @@ macro_rules! unit {
 #[macro_export]
 macro_rules! unit_example {
     ($id:tt, $subject:tt, $claim:tt, $example_name:tt, $body:block) => {
-        ::paste::paste! {
+        ::pastey::paste! {
             #[test]
             fn [< $id _ $example_name >]() {
                 use $crate::LAST_UNIT_EVIDENCE;
