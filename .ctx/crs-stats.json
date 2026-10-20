@@ -1,12 +1,18 @@
 {
   "blocks": {
-    "no-bash-use-nu": 3,
-    "no-grep-use-tool": 1,
-    "no-cd-use-absolute-paths": 4
+    "no-ls-use-glob": 12,
+    "no-find-use-glob": 12,
+    "no-grep-use-tool": 9,
+    "no-bash-use-nu": 25,
+    "no-cat-use-read": 2,
+    "no-cd-use-absolute-paths": 6
   },
   "last_seen": {
-    "no-grep-use-tool": 1791482886.42376,
-    "no-cd-use-absolute-paths": 1791483079.555048,
-    "no-bash-use-nu": 1791483146.943988
+    "no-bash-use-nu": 1792487401.698475,
+    "no-find-use-glob": 1792487276.802273,
+    "no-cd-use-absolute-paths": 1792134086.448256,
+    "no-ls-use-glob": 1792487280.40142,
+    "no-grep-use-tool": 1792487347.052646,
+    "no-cat-use-read": 1792134025.063951
   }
 }

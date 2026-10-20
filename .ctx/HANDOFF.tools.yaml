@@ -1,0 +1,65 @@
+generated: 2026-10-17
+since_days: 30
+sessions_scanned: 1
+total_commands: 116
+top_supported:
+  - command: grep
+    count: 2
+    rule: no-grep-use-tool
+    est_savings_tokens: 201
+  - command: mkdir
+    count: 1
+    rule: no-bash-use-nu
+    est_savings_tokens: 321
+  - command: git commit
+    count: 1
+    rule: no-bash-use-nu
+    est_savings_tokens: 357
+  - command: cargo fmt
+    count: 1
+    rule: no-bash-use-nu
+    est_savings_tokens: 331
+  - command: for crate
+    count: 1
+    rule: no-bash-use-nu
+    est_savings_tokens: 312
+top_unhandled:
+  - base_command: nu
+    count: 72
+    example: "nu -c \"git commit -m 'feat: implement unit! macro for native test evidence recor..."
+  - base_command: cargo test
+    count: 9
+    example: "cargo test -p testes-fuzz --lib 2>&1 | grep -E \"(test result:|error)\" | head -5"
+  - base_command: cargo clippy
+    count: 8
+    example: "cargo clippy --workspace --all-targets -- -D warnings 2>&1 | head -50"
+  - base_command: grep
+    count: 6
+    example: "grep -n \"pub struct ComponentIdentity\" /Users/joe/dev/testes/testes-core/src/typ..."
+  - base_command: git diff
+    count: 3
+    example: "git diff --cached --stat"
+  - base_command: cargo fmt
+    count: 3
+    example: "cargo fmt --check"
+  - base_command: git add
+    count: 2
+    example: "git add Cargo.lock testes-property/Cargo.toml testes-property/src/lib.rs testes-..."
+  - base_command: cargo check
+    count: 2
+    example: "cargo check --workspace --all-targets 2>&1 | tail -100"
+  - base_command: git status
+    count: 1
+    example: "git status --short"
+  - base_command: git branch
+    count: 1
+    example: "git branch -a"
+  - base_command: git checkout
+    count: 1
+    example: "git checkout develop"
+  - base_command: git commit
+    count: 1
+    example: "git commit -m \"$(cat <<'EOF'\nfeat: implement property! macro for property-based ..."
+  - base_command: git
+    count: 1
+    example: "git status"
