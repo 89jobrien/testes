@@ -3,8 +3,8 @@
 use std::cell::RefCell;
 pub use testes_core::{
     BackendConfiguration, BackendIdentity, Claim, Dimension, DimensionEvidence, EvidenceRecord,
-    ExecutionMetadata, ExecutionOutcome, ExecutionStatus, FailureId, IdError,
-    ObligationDisposition, Observed, OutcomeReason, Provenance, RegressionEvidence,
+    ExecutionMetadata, ExecutionOutcome, ExecutionStatus, FailureId, IdError, ObligationDefinition,
+    ObligationDisposition, ObligationId, Observed, OutcomeReason, Provenance, RegressionEvidence,
     RepositoryRevision, ResourceLimits, RunId, Scope, SubjectId, TestDeclaration, TestId,
     TestSpecification, UnitEvidence, WorkingTreeState,
 };
@@ -52,6 +52,16 @@ macro_rules! regression {
                 declaration.validate().expect("valid declaration");
 
                 let started_at = std::time::SystemTime::now();
+
+                // Compute provenance from env / git, falling back to "unknown".
+                let commit = std::env::var("GITHUB_SHA")
+                    .or_else(|_| std::env::var("GIT_COMMIT"))
+                    .or_else(|_| std::env::var("CI_COMMIT_SHA"))
+                    .unwrap_or_else(|_| "unknown".to_string());
+                let repo = std::env::var("GITHUB_REPOSITORY")
+                    .or_else(|_| std::env::var("CI_REPOSITORY_URL"))
+                    .unwrap_or_else(|_| "unknown".to_string());
+
                 let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
                     $body
                 }));
@@ -92,8 +102,8 @@ macro_rules! regression {
                     provenance: $crate::Provenance {
                         run_id: $crate::RunId::new("regression-run").expect("valid"),
                         revision: $crate::RepositoryRevision {
-                            repository: "unknown".to_string(),
-                            commit: "unknown".to_string(),
+                            repository: repo,
+                            commit: commit,
                             working_tree: $crate::WorkingTreeState::Unknown,
                         },
                     },

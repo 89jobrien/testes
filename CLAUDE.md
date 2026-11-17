@@ -22,10 +22,16 @@ coverage in `testes-core` and CI running `--workspace` (see
 `miette::Diagnostic` — `miette`/`thiserror` are `testes-core`'s only
 dependencies, added as a recorded exception to the prior std-only preference
 (see `docs/decisions/0001-layered-dependencies-and-native-testing-backends.md`).
-The eight dimension crates depend only on `testes-core` and contain no macro or
-backend implementation yet — `unit!`, `property!`, `fuzz!`, `prove!`,
-`conformance!`, `integration!`, `regression!`, `mutate!` are planned API, not
-implemented symbols.
+All eight dimension macros (`unit!`, `property!`, `fuzz!`, `prove!`,
+`conformance!`, `integration!`, `regression!`, `mutate!`) exist as
+`macro_rules!` generators that produce native `#[test]` functions, construct
+and validate a `TestDeclaration`, execute the body, and record a
+`DimensionEvidence` variant. They are native test generators, not backends:
+no `TestBackend` implementation exists for any dimension, `prove!` does not
+yet drive Kani, and `EvidenceEvaluator`/`GovernancePolicy` have no concrete
+implementation. Measurement gaps are recorded honestly as
+`Observed::Unavailable` (assertion counts, seeds, coverage, non-vacuity)
+rather than fabricated.
 
 ## Read first
 

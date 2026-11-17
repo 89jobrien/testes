@@ -366,6 +366,35 @@ pub enum Observed<T> {
     Available(T),
     Unavailable { reason: String },
 }
+impl<T> Observed<T> {
+    /// Returns the measurement only when it was actually observed.
+    ///
+    /// `None` means the measurement was unavailable; it must never be
+    /// reinterpreted as a zero-valued measurement.
+    pub fn available(self) -> Option<T> {
+        match self {
+            Self::Available(value) => Some(value),
+            Self::Unavailable { .. } => None,
+        }
+    }
+
+    /// Returns the reason the measurement was unavailable, if it was.
+    pub fn unavailable_reason(&self) -> Option<&str> {
+        match self {
+            Self::Available(_) => None,
+            Self::Unavailable { reason } => Some(reason),
+        }
+    }
+}
+impl<T> Observed<T> {
+    /// Maps the observed value, preserving unavailability.
+    pub fn map<U, F: FnOnce(T) -> U>(self, f: F) -> Observed<U> {
+        match self {
+            Self::Available(value) => Observed::Available(f(value)),
+            Self::Unavailable { reason } => Observed::Unavailable { reason },
+        }
+    }
+}
 #[derive(Clone, Debug)]
 pub struct UnitEvidence {
     pub executed_examples: Vec<String>,
@@ -938,5 +967,77 @@ mod tests {
             EvidenceShapeError::InvalidRegressionPayload.to_string(),
             "regression payload's underlying execution dimension does not match the declared dimension"
         );
+    }
+
+    #[test]
+    fn observed_available_zero_is_distinguishable_from_unavailable() {
+        // A measured zero is a real measurement and must stay distinct from
+        // "not measured". This is the "unavailable is not zero" invariant.
+        let measured_zero = Observed::Available(0_u64);
+        let not_measured = Observed::<u64>::Unavailable {
+            reason: "assertion counting not implemented".to_string(),
+        };
+
+        assert_eq!(measured_zero.available(), Some(0));
+        assert_eq!(not_measured.available(), None);
+    }
+
+    #[test]
+    fn observed_unavailable_reports_reason_and_no_value() {
+        let unavailable = Observed::<u64>::Unavailable {
+            reason: "coverage not instrumented".to_string(),
+        };
+        assert_eq!(
+            unavailable.unavailable_reason(),
+            Some("coverage not instrumented")
+        );
+        assert_eq!(unavailable.available(), None);
+    }
+
+    #[test]
+    fn observed_available_reports_no_unavailable_reason() {
+        let available = Observed::Available(42_u64);
+        assert_eq!(available.unavailable_reason(), None);
+        assert_eq!(available.available(), Some(42));
+    }
+
+    #[test]
+    fn observed_map_preserves_unavailability() {
+        let unavailable = Observed::<u64>::Unavailable {
+            reason: "seed tracking not implemented".to_string(),
+        };
+        let mapped = unavailable.map(|value| value.to_string());
+        assert_eq!(
+            mapped.unavailable_reason(),
+            Some("seed tracking not implemented")
+        );
+        assert_eq!(mapped.available(), None);
+
+        let available = Observed::Available(7_u64);
+        assert_eq!(
+            available.map(|value| value.to_string()).available(),
+            Some("7".to_string())
+        );
+    }
+
+    #[test]
+    fn mutation_detecting_checks_unavailable_is_not_an_empty_check_list() {
+        // `MutationOutcome::Caught` carries the detecting checks as `Observed`.
+        // An unavailable list must not collapse into an empty list, which would
+        // read as "caught by nothing" rather than "not determined".
+        let unavailable = MutationOutcome::Caught {
+            detecting_checks: Observed::Unavailable {
+                reason: "detecting check identities not recorded".to_string(),
+            },
+            diagnostic: None,
+        };
+        match unavailable {
+            MutationOutcome::Caught {
+                detecting_checks, ..
+            } => {
+                assert_eq!(detecting_checks.available(), None);
+            }
+            other => panic!("expected Caught outcome, got {other:?}"),
+        }
     }
 }

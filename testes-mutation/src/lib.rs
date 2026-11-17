@@ -4,7 +4,8 @@ use std::cell::RefCell;
 pub use testes_core::{
     BackendConfiguration, BackendIdentity, Claim, CommandSpec, Dimension, DimensionEvidence,
     EvidenceRecord, ExecutionMetadata, ExecutionOutcome, ExecutionStatus, IdError,
-    MutationEvidence, ObligationDisposition, OutcomeReason, Provenance, RepositoryRevision,
+    MutationDefinition, MutationEvidence, MutationOutcome, MutationResult, ObligationDefinition,
+    ObligationDisposition, ObligationId, Observed, OutcomeReason, Provenance, RepositoryRevision,
     ResourceLimits, RunId, Scope, SubjectId, TestDeclaration, TestId, TestSpecification,
     WorkingTreeState,
 };
@@ -52,6 +53,16 @@ macro_rules! mutate {
                 declaration.validate().expect("valid declaration");
 
                 let started_at = std::time::SystemTime::now();
+
+                // Compute provenance from env / git, falling back to "unknown".
+                let commit = std::env::var("GITHUB_SHA")
+                    .or_else(|_| std::env::var("GIT_COMMIT"))
+                    .or_else(|_| std::env::var("CI_COMMIT_SHA"))
+                    .unwrap_or_else(|_| "unknown".to_string());
+                let repo = std::env::var("GITHUB_REPOSITORY")
+                    .or_else(|_| std::env::var("CI_REPOSITORY_URL"))
+                    .unwrap_or_else(|_| "unknown".to_string());
+
                 let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
                     $body
                 }));
@@ -100,8 +111,8 @@ macro_rules! mutate {
                     provenance: $crate::Provenance {
                         run_id: $crate::RunId::new("mutation-run").expect("valid"),
                         revision: $crate::RepositoryRevision {
-                            repository: "unknown".to_string(),
-                            commit: "unknown".to_string(),
+                            repository: repo,
+                            commit: commit,
                             working_tree: $crate::WorkingTreeState::Unknown,
                         },
                     },

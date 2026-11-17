@@ -12,9 +12,10 @@
 use std::cell::RefCell;
 pub use testes_core::{
     BackendConfiguration, BackendIdentity, Claim, Dimension, DimensionEvidence, EvidenceRecord,
-    ExecutionMetadata, ExecutionOutcome, ExecutionStatus, IdError, ObligationDisposition,
-    ObligationId, Observed, OutcomeReason, Provenance, RepositoryRevision, ResourceLimits, RunId,
-    Scope, SubjectId, TestDeclaration, TestId, TestSpecification, UnitEvidence, WorkingTreeState,
+    ExecutionMetadata, ExecutionOutcome, ExecutionStatus, IdError, ObligationDefinition,
+    ObligationDisposition, ObligationId, Observed, OutcomeReason, Provenance, RepositoryRevision,
+    ResourceLimits, RunId, Scope, SubjectId, TestDeclaration, TestId, TestSpecification,
+    UnitEvidence, WorkingTreeState,
 };
 
 thread_local! {
@@ -78,6 +79,16 @@ macro_rules! unit_example {
                     .expect("test id must not be blank or contain control characters");
                 let subject_id = $crate::SubjectId::new($subject)
                     .expect("subject must not be blank or contain control characters");
+
+                // Compute provenance from env / git, falling back to "unknown".
+                let commit = std::env::var("GITHUB_SHA")
+                    .or_else(|_| std::env::var("GIT_COMMIT"))
+                    .or_else(|_| std::env::var("CI_COMMIT_SHA"))
+                    .unwrap_or_else(|_| "unknown".to_string());
+
+                let repo = std::env::var("GITHUB_REPOSITORY")
+                    .or_else(|_| std::env::var("CI_REPOSITORY_URL"))
+                    .unwrap_or_else(|_| "unknown".to_string());
 
                 // Construct the declaration.
                 let declaration = $crate::TestDeclaration {
@@ -151,8 +162,8 @@ macro_rules! unit_example {
                         run_id: $crate::RunId::new("unit-test-run")
                             .expect("run id valid"),
                         revision: $crate::RepositoryRevision {
-                            repository: "unknown".to_string(),
-                            commit: "unknown".to_string(),
+                            repository: repo,
+                            commit: commit,
                             working_tree: $crate::WorkingTreeState::Unknown,
                         },
                     },

@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Provenance tracking in dimension macros** — All eight macros (`unit!`, `property!`, `fuzz!`, `prove!`, `conformance!`, `integration!`, `regression!`, `mutate!`) now populate `Provenance.revision` from `GITHUB_SHA`/`GIT_COMMIT`/`CI_COMMIT_SHA` and `GITHUB_REPOSITORY`/`CI_REPOSITORY_URL`, falling back to `"unknown"` when unset
+  - Previously every macro hardcoded `"unknown"` for both repository and commit
+- **`Observed<T>` accessors** — `testes-core` gains `Observed::available()`, `Observed::unavailable_reason()`, and `Observed::map()`
+  - `available()` returns `None` for unavailability so a missing measurement cannot be read as a zero-valued one
+- **Invalid-declaration tests for every dimension** — Each of the eight dimension crates now asserts that `TestDeclaration::validate()` rejects a dimension mismatch, a blank claim statement, and duplicate obligation IDs
+  - `testes-regression` additionally covers the dimension-specific rule that regression cannot wrap regression or mutation
+- **Mutation detection-rate coverage** — Asserts that macro-produced mutation evidence reports `None` (unavailable, not 0.0) when no mutants were assessed, and that unviable, timeout, and excluded outcomes do not shift the detection rate
+- **`Observed<T>` invariant tests** — Covers measured-zero staying distinct from unavailability, unavailable reasons, and `map` preserving unavailability
+- **IDEAS.md** — Prioritised, evidence-grounded backlog of follow-up work with completion status
+
+### Changed
+
+- **Workspace package inheritance** — All nine crates now inherit `version`, `edition`, `license`, and `repository` from `[workspace.package]` instead of repeating literal values
+- **Consistent dimension-crate re-exports** — Each dimension crate re-exports the common declaration/evidence surface, including `ObligationDefinition` (previously missing from all eight) and `ObligationId`/`Observed` where the dimension's own evidence types require them
+
+### Fixed
+
+- **`testes-model-check/Cargo.toml`** — The crate was the only one still on hardcoded package metadata; now consistent with its siblings
+
 ## [0.4.0] - 2026-10-20
 
 ### Added
