@@ -6,13 +6,13 @@ Handoff baseline: `9923548431dbc5794f9d12e1ced80f4f40977488` on main. The initia
 
 ## Existing assets
 
-- `Cargo.toml`: a single Rust 2024 package, no dependencies, `publish = false`.
-- `src/lib.rs`: public re-exports and unsafe-code prohibition.
-- `src/types.rs`: identities, declarations, scope, provenance, artifacts, all eight evidence variants, and limited shape validation.
-- `src/traits.rs`: backend/context/storage/sink ports, evaluators, governance, and conformance interfaces.
+- `Cargo.toml`: a workspace of nine member crates (`testes-core`, `testes-unit`, `testes-property`, `testes-fuzz`, `testes-model-check`, `testes-conformance`, `testes-integration`, `testes-regression`, `testes-mutation`); `testes-core` has `miette` + `thiserror` deps; dimension crates carry `pastey`/`proptest` per ADR-0001 §1/ADR-0005; all `publish = false`.
+- `testes-core/src/lib.rs`: public re-exports (`pub use traits::*; pub use types::*;`) and `#![forbid(unsafe_code)]`.
+- `testes-core/src/types.rs`: identities, declarations, scope, provenance, artifacts, all eight evidence variants, and limited shape validation.
+- `testes-core/src/traits.rs`: backend/context/storage/sink ports, evaluators, governance, and conformance interfaces.
 - `docs/dimensions/`: one definition and evidence contract per dimension.
 
-No public dimension macros, concrete backends, tests, CI, workspace split, persistence implementation, or serialization are present in this baseline. Compilation, formatting, and lint status are unverified.
+No concrete backends, persistence implementation, or serialization are present in this baseline; the public dimension macros (first-pass, per ADR-0012 §1) and tests exist now.
 
 ## First bounded task
 

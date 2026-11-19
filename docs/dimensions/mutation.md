@@ -6,7 +6,7 @@ Assess whether selected verification detects deliberately introduced behavioral 
 
 ## Declaration
 
-`TestSpecification::Mutation` identifies source selectors, operators, selected checks, and commands. Planned macro: `testes::mutate!` (not implemented). Intended initial backend: cargo-mutants; seeded faulty implementations are a separate planned mode. Launch campaigns through orchestration, never during macro expansion.
+`TestSpecification::Mutation` identifies source selectors, operators, selected checks, and commands. Public macro: `testes_mutation::mutate!` (first-pass expansion shipped; ADR-0012 §1). Intended initial backend: cargo-mutants; seeded faulty implementations are a separate planned mode. Launch campaigns through orchestration, never during macro expansion.
 
 ## Execution evidence
 

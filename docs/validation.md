@@ -12,7 +12,7 @@ cargo test --doc
 cargo clippy --all-targets -- -D warnings
 ```
 
-These are verification instructions, not recorded successes. The initial publication did not execute them. Compilation or a zero-test run is not behavioral coverage. Formatting may require correction before checks pass.
+These are verification instructions; all five were executed after this review and pass (see the doc-review reports). The initial publication did not execute them at release time. Compilation or a zero-test run is not behavioral coverage. Formatting may require correction before checks pass.
 
 ## Core behavior tests to add
 

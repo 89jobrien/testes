@@ -6,7 +6,7 @@ Verify an implementation against a reusable suite owned by its trait or protocol
 
 ## Declaration
 
-`TestSpecification::Conformance` identifies contract/version, implementation/configuration, and cases. Planned macro: `testes::conformance!` (not implemented). Existing interfaces are `ConformanceCase`, `ConformanceSuite`, `SubjectFactory`, and `SubjectCleanup`; their orchestration is not implemented.
+`TestSpecification::Conformance` identifies contract/version, implementation/configuration, and cases. Public macro: `testes_conformance::conformance!` (first-pass expansion shipped; ADR-0012 §1). Existing interfaces are `ConformanceCase`, `ConformanceSuite`, `SubjectFactory`, and `SubjectCleanup`; their orchestration is not implemented.
 
 ## Execution evidence
 

@@ -27,7 +27,7 @@ This ADR is short on invention because `testes-core/src/types.rs` already provid
 things a naive design would have to invent:
 
 ```rust
-// types.rs:339-349 — the three-way classification is ALREADY a core type
+// types.rs:338-349 — the three-way classification is ALREADY a core type
 pub struct ComponentIdentity {
     pub name: String,
     pub version: Option<String>,
@@ -35,7 +35,7 @@ pub struct ComponentIdentity {
 }
 pub enum BoundaryKind { Real, Fake, Simulated }
 
-// types.rs:351-356 — a child-process command with its OWN environment
+// types.rs:350-356 — a child-process command with its OWN environment
 pub struct CommandSpec {
     pub program: String,
     pub arguments: Vec<String>,
@@ -43,7 +43,7 @@ pub struct CommandSpec {
     pub environment: BTreeMap<String, ConfigurationValue>,
 }
 
-// types.rs:453-459 — cleanup is a first-class ExecutionOutcome, not a wrapper
+// types.rs:481-488 — cleanup is a first-class ExecutionOutcome, not a wrapper
 pub struct IntegrationEvidence {
     pub seam_id: String,
     pub components: Vec<ComponentIdentity>,
@@ -138,7 +138,7 @@ verification." A `timeout:` field would let the caller pick a bound and then hav
 become the recorded outcome — the exact masquerade the spec forbids. So the expansion owns the
 bound and maps exhaustion to `Inconclusive`.
 
-Note `MutationOutcome::Timeout { limit: Duration }` exists in core (`types.rs:485-487`) — but for
+Note `MutationOutcome::Timeout { limit: Duration }` exists in core (`types.rs:514-516`) — but for
 mutation, where the _backend_ reports the limit it used. Integration deliberately inverts that: the
 runner owns the bound and reports `Inconclusive` without letting the caller choose it.
 

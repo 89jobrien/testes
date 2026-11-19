@@ -33,7 +33,7 @@ TestSpecification::Regression {
     reproducer_artifacts: Vec<ArtifactId>,
 }
 
-// types.rs:460-467
+// types.rs:489-496
 pub struct RegressionEvidence {
     pub failure: FailureId,
     pub reproducer_artifacts: Vec<ArtifactId>,
@@ -347,7 +347,7 @@ Items 6, 7, and 9 apply only if option B is chosen; option A needs its own deter
   per ADR-0001 §1.
 - `Dimension` must be checked against the six accepted underlying dimensions at expansion time, so
   `Dimension::Mutation` and `Dimension::Regression` are rejected. `TestDeclaration::validate()`
-  checks this for `Regression` (types.rs:200, with fixtures at 584, 720, 775), but a compile-time
+  checks this for `Regression` (types.rs:200-210, with fixtures at types.rs:746 and types.rs:801), but a compile-time
   rejection is preferable and is what this grammar specifies.
 - `docs/macro-plan.md` order item 4 pairs property and regression replay. ADR-0005 (`property!`) is
   complete; this ADR's acquisition question should be settled in the same slice.

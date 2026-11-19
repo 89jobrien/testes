@@ -2,7 +2,7 @@
 
 ## Agreed design
 
-The eight entry points are `unit!`, `property!`, `fuzz!`, `prove!`, `conformance!`, `integration!`, `regression!`, and `mutate!`. They are planned APIs, not implemented symbols.
+The eight entry points are `unit!` (`testes_unit::unit!`), `property!` (`testes_property::property!`), `fuzz!` (`testes_fuzz::fuzz!`), `prove!` (`testes_model_check::prove!`), `conformance!` (`testes_conformance::conformance!`), `integration!` (`testes_integration::integration!`), `regression!` (`testes_regression::regression!`), and `mutate!` (`testes_mutation::mutate!`); see ADR-0012 §1. They are first-pass expansions, not the full planned surface.
 
 Dependency direction:
 
@@ -35,7 +35,7 @@ The workspace is split into `testes-core` plus one crate per dimension
 `testes-conformance`, `testes-integration`, `testes-regression`,
 `testes-mutation`), so each dimension can be pulled in independently — see
 `docs/decisions/0003-eight-way-dimension-crate-split.md`. Each dimension crate
-depends only on `testes-core` for now; add a procedural-macro crate or a
+depends only on `testes-core` (plus the tiny `pastey` naming helper; ADR-0001 §1) for now; add a procedural-macro crate or a
 heavier backend dependency only when a reviewed grammar or implementation need
 requires it.
 

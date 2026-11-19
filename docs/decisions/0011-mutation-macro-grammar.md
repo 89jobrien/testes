@@ -149,7 +149,7 @@ Eight fields:
 | `retries:` | a retry is an orchestration policy, not a declaration concern                                                                             |
 | `path:`    | `CommandSpec.working_directory` already carries it, per-command                                                                           |
 
-### Expansion target: a plan, not a test
+### Expansion target: a plan, not a test (grammar of record; ADR-0012 §1 records the shipped first-pass in `testes-mutation/src/lib.rs` generating a `#[test]`)
 
 ```rust
 /// Campaign plan for {id}. Consumed by orchestration; never executed by the test harness.
@@ -178,7 +178,7 @@ pub fn {id}_campaign() -> mutation::MutationCampaign {
 
 Three decisions:
 
-1. **No `#[test]` is generated.** `docs/macro-plan.md` item 2 permits "a valid native harness **or
+1. **The plan form generates no `#[test]` (ADR-0012 §3); the shipped first-pass `mutate!` in `testes-mutation/src/lib.rs:22-23` generates one.** `docs/macro-plan.md` item 2 permits "a valid native harness **or
    plan**", and for `mutate!` the campaign is the harness. A generated `#[test]` that passes without
    executing a campaign would manufacture a green bit for work never done.
 2. **A doc comment states the negative**, so a reader encountering the function in a `use` statement
@@ -268,7 +268,7 @@ because it consumes no execution.
 
 ## Consequences
 
-- **`mutate!` is the only macro with no `#[test]` and no `thread_local!` slot.** Nothing about it
+- **The ADR-0011 plan form generates no `#[test]`; the shipped first-pass `mutate!` in `testes-mutation/src/lib.rs:22-23` generates one today.** Nothing about the plan form
   participates in the cargo test pass/fail bit. CI cannot detect a broken campaign declaration by
   running tests — it must consume the plan, which means a **new CI lane**, not an extension of the
   existing one. `docs/validation.md`: "Report separate lanes ... **Do not count an omitted lane as
@@ -316,8 +316,7 @@ because it consumes no execution.
 
 ## Validation (to add when implemented)
 
-1. **Expansion generates no `#[test]`** — `cargo test` collects nothing from a `mutate!` invocation
-   (compile fixture asserting no test function name is produced).
+1. **The plan form generates no `#[test]` (ADR-0012 §3); the shipped first-pass `mutate!` in `testes-mutation/src/lib.rs:22-23` generates one today** — a compile fixture asserting no test function name is produced for the plan form.
 2. **Expansion executes nothing** — the plan is a plain function over literals; a fixture asserts
    no subprocess or filesystem write occurs during compilation of a crate containing `mutate!`.
 3. **`baseline` is required** — omitting it is a compile error, not a defaulted value.
@@ -344,13 +343,7 @@ Items 1–8 need no external toolchain. Items 9–11 require cargo-mutants insta
 
 ## Open questions for the owner
 
-1. **`MutationPolicy` does not exist.** It is named in `docs/dimensions/mutation.md` Acceptance
-   ("Assessed count, missed results, and unresolved timeouts must satisfy explicit
-   `MutationPolicy`") and Reporting, and `docs/handoff.md` flags "Mutation-rate arithmetic does
-   not check baseline validity or policy" as an open review question — but there is **no
-   definition, no type, and no threshold anywhere in the repository**. This ADR's `policy:` field
-   needs the type. **This is blocking**: designing `MutationPolicy` should precede implementation.
-   This ADR is Accepted as a grammar decision; accepting it does not resolve this question.
+1. **Where does `MutationPolicy` live, and what designs the plan type?** `MutationPolicy { minimum_assessed, maximum_missed, allow_timeouts }` now exists — defined at `testes-core/src/traits.rs:56-60`, wired through `EvidenceRequirements.mutation: Option<MutationPolicy>` (`traits.rs:53`). Open questions: should it move into `testes-mutation` (ADR-0011 says yes; it predates and lives in core), and is the `strict()` constructor in the sketch defined anywhere? Also open: the `MutationCampaign` type named in the sketch is the grammar of record — no such type is defined in the repo today. Designing that plan type is a separate follow-on.
 2. **Function or `const` plan?** A `const` would give compile-time evaluation but cannot hold
    `TestId::new(...)` without an `unwrap`, and `AGENTS.md` prefers contextual `expect` over
    unexplained `unwrap`. A function loses const checking. Is a plain function acceptable?

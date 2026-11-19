@@ -6,7 +6,7 @@ Search for counterexamples to an invariant over a strategy-defined domain. This 
 
 ## Declaration
 
-`TestSpecification::Property` identifies the strategy, minimum cases, and regression artifacts. Required scope states domain constraints. Planned macro: `testes::property!` (not implemented). Intended backend: Proptest. Strategies remain project-owned.
+`TestSpecification::Property` identifies the strategy, minimum cases, and regression artifacts. Required scope states domain constraints. Public macro: `testes_property::property!` (first-pass expansion shipped; ADR-0012 §1). Intended backend: Proptest. Strategies remain project-owned.
 
 ## Execution evidence
 

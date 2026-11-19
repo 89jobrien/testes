@@ -45,6 +45,12 @@ testes::unit! {
 
 ### Expansion target
 
+(ADR-0012 §1: the shipped first-pass `unit!` in `testes-unit/src/lib.rs` is the expansion
+of record; the sketch uses `OutcomeStatus` — actual `ExecutionStatus` — `assertion_evaluated: 1`
+— actual `ExecutionOutcome` fields are `status`/`reason`/`diagnostic`/`obligations` — and a
+`RefCell<Option<EvidenceRecord>>` thread-local — actual:
+`LAST_UNIT_EVIDENCE: RefCell<Option<(TestId, UnitEvidence)>>`.)
+
 For each example, the macro generates:
 
 ```rust

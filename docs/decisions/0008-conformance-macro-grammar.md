@@ -74,8 +74,8 @@ capability does not satisfy the claim."
 The types already express this. `ContractCaseDeclaration.required_capabilities: Vec<CapabilityRequirement>`
 declares what a case needs; `SubjectFactory.capabilities()` returns
 `Vec<CapabilityObservation { name, state }>` where `CapabilityState` is
-`Available | Unavailable { reason }` (`types.rs:423-426` for the enum,
-`types.rs:428-431` for the observation). Comparing the two is a set operation
+`Available | Unavailable { reason }` (`types.rs:451-454` for the enum,
+`types.rs:456-459` for the observation). Comparing the two is a set operation
 the _contract_ authored on both sides.
 
 So there is nothing for a grammar to declare — and, importantly, **nothing for an implementer to
@@ -83,7 +83,7 @@ declare**. Adding a `skip:` field would reintroduce exactly the opt-out the spec
 
 ### `CheckFailure` already encodes the three-way split
 
-`traits.rs:108-113`:
+`traits.rs:107-114`:
 
 ```rust
 Violation { message: String }        // contract violated  -> outcome Failed
@@ -203,7 +203,7 @@ fn {id}() {
         });
     }
 
-    // Schematic: `EvidenceRecord` (types.rs:553-562) has no `test_id`, `backend_used`, or
+    // Schematic: `EvidenceRecord` (types.rs:582-591) has no `test_id`, `backend_used`, or
     // `timestamp` field. The dimension payload lives in `dimension_evidence`; backend identity and
     // the run's timing live in `execution: ExecutionMetadata`.
     let evidence = EvidenceRecord {

@@ -6,7 +6,7 @@ Preserve a reproducer that distinguishes a previously observed defect from repai
 
 ## Declaration
 
-`TestSpecification::Regression` identifies failure, underlying dimension, and reproducer artifacts. The current core accepts unit, property, fuzz, model check, conformance, or integration as the underlying dimension. Planned macro: `testes::regression!` (not implemented).
+`TestSpecification::Regression` identifies failure, underlying dimension, and reproducer artifacts. The current core accepts unit, property, fuzz, model check, conformance, or integration as the underlying dimension. Public macro: `testes_regression::regression!` (first-pass expansion shipped; ADR-0012 §1).
 
 ## Execution evidence
 

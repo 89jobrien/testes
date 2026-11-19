@@ -6,7 +6,7 @@ Verify observable behavior across a named seam between connected components. Tes
 
 ## Declaration
 
-`TestSpecification::Integration` identifies seam and components. Mark each boundary as real, fake, or simulated. Planned macro: `testes::integration!` (not implemented). Intended execution uses Rust tests and explicit process/I/O adapters.
+`TestSpecification::Integration` identifies seam and components. Mark each boundary as real, fake, or simulated. Public macro: `testes_integration::integration!` (first-pass expansion shipped; ADR-0012 §1). Intended execution uses Rust tests and explicit process/I/O adapters.
 
 ## Execution evidence
 

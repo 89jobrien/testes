@@ -95,20 +95,20 @@ mechanism changes.
 ADR-0008, ADR-0010, and ADR-0011 require **no `testes-core` type change** on the evidence side.
 ADR-0011 still needs `MutationPolicy` _authored_, but it belongs in `testes-mutation`.
 
-### 3. ADR-0011 is the only macro that produces no `#[test]`
+### 3. ADR-0011's `mutate!` plan form produces no `#[test]` (shipped first-pass does)
 
 `docs/macro-plan.md` item 2 permits "a valid native harness **or plan**."
 
-| Macro          | Expansion product           | Produces `#[test]`? | `thread_local!` slot? |
-| -------------- | --------------------------- | ------------------- | --------------------- |
-| `unit!`        | `#[test]` per example       | yes                 | yes                   |
-| `property!`    | one `#[test]`               | yes                 | yes                   |
-| `fuzz!`        | one `#[test]`               | yes                 | yes                   |
-| `prove!`       | one `#[test]`               | yes                 | (unspecified)         |
-| `conformance!` | one `#[test]`               | yes                 | yes                   |
-| `regression!`  | one `#[test]`               | yes                 | yes                   |
-| `integration!` | one `#[test]`               | yes                 | yes                   |
-| **`mutate!`**  | **`MutationCampaign` plan** | **no**              | **no**                |
+| Macro          | Expansion product                                                             | Produces `#[test]`? | `thread_local!` slot? |
+| -------------- | ----------------------------------------------------------------------------- | ------------------- | --------------------- |
+| `unit!`        | `#[test]` per example                                                         | yes                 | yes                   |
+| `property!`    | one `#[test]`                                                                 | yes                 | yes                   |
+| `fuzz!`        | one `#[test]`                                                                 | yes                 | yes                   |
+| `prove!`       | one `#[test]`                                                                 | yes                 | (unspecified)         |
+| `conformance!` | one `#[test]`                                                                 | yes                 | yes                   |
+| `regression!`  | one `#[test]`                                                                 | yes                 | yes                   |
+| `integration!` | one `#[test]`                                                                 | yes                 | yes                   |
+| **`mutate!`**  | first-pass `#[test]` (testes-mutation/src/lib.rs:22-23); ADR-0011's plan form | **yes**             | **yes**               |
 
 Consequence: `cargo test` cannot observe a campaign declaration at all. Detecting a broken
 campaign requires a **new CI lane**, not an extension of the existing one. `docs/validation.md`:
@@ -203,7 +203,7 @@ Recorded, not addressed — each is a separate edit:
 | ---------------------------------------- | ---------------------------------------------------------------------------------- |
 | `docs/handoff.md`                        | pre-workspace paths (`src/types.rs`), "no dependencies", zero tests                |
 | `docs/architecture.md` "Crate evolution" | predates ADR-0003's split                                                          |
-| `docs/README.md` "Implementation status" | says macros are unimplemented; still true, but four more grammars are now Accepted |
+| `docs/README.md` "Implementation status" | macro claim updated to first-pass (see fixes); four more grammars are now Accepted |
 | ADR-0001 §8                              | CI runs plain `cargo test`, not `--workspace`                                      |
 | `docs/validation.md`                     | records no results and omits `--workspace`                                         |
 

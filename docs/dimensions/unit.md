@@ -6,7 +6,7 @@ Verify one coherent behavior against explicit examples. A behavioral unit may ca
 
 ## Declaration
 
-`Dimension::Unit` and `TestSpecification::Unit` identify the subject, claim, obligations, and example IDs. Planned public entry point: `testes::unit!` (not implemented). Intended backend: ordinary Rust tests.
+`Dimension::Unit` and `TestSpecification::Unit` identify the subject, claim, obligations, and example IDs. Public entry point: `testes_unit::unit!` (first-pass expansion shipped; ADR-0012 §1). Intended backend: ordinary Rust tests.
 
 ## Execution evidence
 

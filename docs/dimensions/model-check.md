@@ -6,7 +6,7 @@ Verify assertions over executions represented by a symbolic harness. Claims are 
 
 ## Declaration
 
-`TestSpecification::ModelCheck` identifies harness and proof obligations. Scope records justified assumptions and bounds. Planned macro: `testes::prove!` (not implemented). Intended backend: Kani. Keep symbolic inputs, assumptions, and unwind annotations visible in project-owned harnesses.
+`TestSpecification::ModelCheck` identifies harness and proof obligations. Scope records justified assumptions and bounds. Public macro: `testes_model_check::prove!` (first-pass expansion shipped; ADR-0012 §1). Intended backend: Kani. Keep symbolic inputs, assumptions, and unwind annotations visible in project-owned harnesses.
 
 ## Execution evidence
 

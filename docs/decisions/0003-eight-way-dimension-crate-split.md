@@ -85,9 +85,7 @@ exist specifically to carry the dependencies core must not).
   crates (wrong direction); whether a facade crate re-exporting all eight for
   single-dependency convenience is wanted is **not** decided here — out of scope,
   raise separately if wanted.
-- `docs/architecture.md`'s "Crate evolution" section is now stale (still says "no
-  package layout beyond the current library is committed") and needs updating to
-  point at this ADR.
+- `docs/architecture.md`'s "Crate evolution" section now matches this ADR (verified against the committed manifest and workspace dirs); drift from when the ADR was drafted is recorded in ADR-0012 §8.
 - Existing single-crate paths in docs (`src/types.rs`, `src/traits.rs`) move to
   `testes-core/src/types.rs`, `testes-core/src/traits.rs` — every doc that names
   those paths needs updating. `AGENTS.md`'s "Read first" list (`src/types.rs` and

@@ -10,7 +10,7 @@
 
 ## Context
 
-`src/traits.rs` already defines a generic port for dimension execution:
+`testes-core/src/traits.rs` already defines a generic port for dimension execution:
 
 ```rust
 pub trait TestBackend {
@@ -30,6 +30,10 @@ strategy — e.g. `property!` could run against `proptest` or a different genera
 engine required."_ There is exactly one way a Rust unit test executes — the ordinary
 `#[test]` harness `cargo test` already drives. There is no second implementation to
 substitute, now or foreseeably.
+
+Today all eight macros are `macro_rules!` expansions in the dimension crates
+(ADR-0012 §1) and none of them implements `TestBackend` — the port is reserved, not
+yet used.
 
 The writing-solid-rust skill's own "When NOT to use this pattern" section applies
 directly: _"Single implementation - if you'll only ever have one implementation,

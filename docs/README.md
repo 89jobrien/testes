@@ -2,22 +2,22 @@
 
 Testes defines seven behavior-verification dimensions plus mutation analysis. Dimensions are complementary obligations, not mandatory sequential steps for every function.
 
-| Dimension | Question | Planned macro |
-|---|---|---|
-| [Unit](dimensions/unit.md) | Does this example behave as expected? | `unit!` |
-| [Property](dimensions/property.md) | Does the invariant survive generated inputs? | `property!` |
-| [Fuzz](dimensions/fuzz.md) | Does the boundary withstand adversarial input? | `fuzz!` |
-| [Model check](dimensions/model-check.md) | Can a modeled execution violate the invariant? | `prove!` |
-| [Conformance](dimensions/conformance.md) | Does an implementation satisfy its contract? | `conformance!` |
-| [Integration](dimensions/integration.md) | Do connected components preserve behavior across a seam? | `integration!` |
-| [Regression](dimensions/regression.md) | Is a previously observed defect still prevented? | `regression!` |
-| [Mutation](dimensions/mutation.md) | Do selected checks detect deliberately introduced defects? | `mutate!` |
+| Dimension                                | Question                                                   | Planned macro  |
+| ---------------------------------------- | ---------------------------------------------------------- | -------------- |
+| [Unit](dimensions/unit.md)               | Does this example behave as expected?                      | `unit!`        |
+| [Property](dimensions/property.md)       | Does the invariant survive generated inputs?               | `property!`    |
+| [Fuzz](dimensions/fuzz.md)               | Does the boundary withstand adversarial input?             | `fuzz!`        |
+| [Model check](dimensions/model-check.md) | Can a modeled execution violate the invariant?             | `prove!`       |
+| [Conformance](dimensions/conformance.md) | Does an implementation satisfy its contract?               | `conformance!` |
+| [Integration](dimensions/integration.md) | Do connected components preserve behavior across a seam?   | `integration!` |
+| [Regression](dimensions/regression.md)   | Is a previously observed defect still prevented?           | `regression!`  |
+| [Mutation](dimensions/mutation.md)       | Do selected checks detect deliberately introduced defects? | `mutate!`      |
 
 Read the [execution evidence contract](evidence.md) before interpreting a passing result.
 
 ## Implementation status
 
-The repository contains draft core types and trait interfaces. The public macros above, native backends, evidence persistence, runners, and policy evaluators are not implemented. The initial core commit has not been compiled or tested as part of this publication. These documents specify intended behavior, not completed integrations.
+The repository contains draft core types and trait interfaces. The public dimension macros exist as first-pass expansions in the dimension crates (`testes_unit::unit!`, `testes_property::property!`, `testes_fuzz::fuzz!`, `testes_model_check::prove!`, `testes_conformance::conformance!`, `testes_integration::integration!`, `testes_regression::regression!`, `testes_mutation::mutate!`; see ADR-0012 §1), but native backends, evidence persistence, runners, and policy evaluators are not implemented. These documents specify intended behavior, not completed integrations.
 
 ## Ownership
 
