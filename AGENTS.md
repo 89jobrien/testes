@@ -22,11 +22,13 @@ A Cargo workspace of nine crates: `testes-core` (types, traits, evidence model â
 (`testes-unit`, `testes-property`, `testes-fuzz`, `testes-model-check`,
 `testes-conformance`, `testes-integration`, `testes-regression`,
 `testes-mutation` â€” see ADR-0003). Core structs, enums, traits, and limited
-validation helpers are drafts with baseline unit coverage. `testes-fuzz` provides
-the `fuzz!` macro and an in-process seed-corpus runner (not coverage-guided, no
-libFuzzer; see ADR-0006). The other dimension crates contain no macro or backend
-implementation yet. CI runs `--workspace`. Verify current state before repeating
-these statements.
+validation helpers are drafts with baseline unit coverage. The eight dimension
+crates exist. `unit!` and `property!` are implemented. `fuzz!` provides an
+in-process seed-corpus runner (not coverage-guided, no libFuzzer; see ADR-0006).
+`prove!` (`testes-model-check`), `integration!`, and `regression!` are implemented.
+`mutate!` provides declaration, evidence, and assessment with no cargo-mutants
+backend (see ADR-0007). `conformance!` contains no macro or backend implementation
+yet. CI runs `--workspace`. Verify current state before repeating these statements.
 
 ## Non-negotiable invariants
 

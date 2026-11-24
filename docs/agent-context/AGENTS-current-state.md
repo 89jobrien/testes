@@ -20,6 +20,10 @@ see `docs/decisions/0006-fuzz-macro-grammar.md`). `testes-model-check` implement
 `prove!` with a `ModelCheckBackend` port and no Kani dependency. `testes-integration`
 implements `integration!` (one scenario per invocation). `testes-regression`
 implements `regression!` as a native macro with identity checks and no backend.
-`conformance!` and `mutate!` are planned API, not implemented symbols, unless their
-crate states otherwise. `unit!` and `property!` are planned API, not implemented
-symbols, unless their crate states otherwise.
+`testes-mutation` implements `mutate!` as a declaration, evidence record, and claim
+assessment against an explicit `MutationPolicy`. It accepts a campaign supplied by a
+runner and runs no mutation campaign itself; cargo-mutants is not integrated (see
+`docs/decisions/0007-mutate-macro-grammar.md`). `conformance!` is planned API, not an
+implemented symbol. `unit!` and `property!` are implemented in `testes-unit` and
+`testes-property`, though some of their evidence fields are still `Unavailable`
+placeholders.
