@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **mutate! macro** — Mutation declaration, evidence recording, and claim assessment in `testes-mutation` (ADR-0006)
+  - Records a `DimensionEvidence::Mutation` result from a campaign supplied by a runner; no campaign runs during expansion
+  - Assessment requires a passing baseline, selected-check attribution for caught mutants, a timeout/exclusion policy, and a non-zero assessed count
+  - Zero assessed experiments is never reported as full detection
+
 ## [0.2.0] - 2026-10-16
 
 ### Added

@@ -23,7 +23,7 @@ A Cargo workspace of nine crates: `testes-core` (types, traits, evidence model â
 `testes-conformance`, `testes-integration`, `testes-regression`,
 `testes-mutation` â€” see ADR-0003). Core structs, enums, traits, and limited
 validation helpers are drafts with baseline unit coverage. The eight dimension
-crates exist but contain no macro or backend implementation yet. CI runs
+crates exist. `unit!`, `property!`, and `mutate!` (declaration, evidence, and assessment, with no cargo-mutants backend) are implemented; the other dimension crates contain no macro or backend implementation yet. CI runs
 `--workspace`. Verify current state before repeating these statements.
 
 ## Non-negotiable invariants

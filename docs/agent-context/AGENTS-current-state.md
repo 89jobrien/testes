@@ -14,7 +14,9 @@ coverage in `testes-core` and CI running `--workspace` (see
 `miette::Diagnostic` — `miette`/`thiserror` are `testes-core`'s only
 dependencies, added as a recorded exception to the prior std-only preference
 (see `docs/decisions/0001-layered-dependencies-and-native-testing-backends.md`).
-The eight dimension crates depend only on `testes-core` and contain no macro or
-backend implementation yet — `unit!`, `property!`, `fuzz!`, `prove!`,
-`conformance!`, `integration!`, `regression!`, `mutate!` are planned API, not
-implemented symbols.
+`mutate!` (`testes-mutation`) is implemented as a declaration, evidence record, and
+claim assessment against an explicit `MutationPolicy`. It accepts a campaign
+supplied by a runner and runs no mutation campaign itself; cargo-mutants is not
+integrated (see `docs/decisions/0006-mutate-macro-grammar.md`). `fuzz!`, `prove!`,
+`conformance!`, `integration!`, and `regression!` are planned API, not implemented
+symbols.
