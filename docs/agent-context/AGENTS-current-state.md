@@ -14,7 +14,8 @@ coverage in `testes-core` and CI running `--workspace` (see
 `miette::Diagnostic` — `miette`/`thiserror` are `testes-core`'s only
 dependencies, added as a recorded exception to the prior std-only preference
 (see `docs/decisions/0001-layered-dependencies-and-native-testing-backends.md`).
-The eight dimension crates depend only on `testes-core` and contain no macro or
-backend implementation yet — `unit!`, `property!`, `fuzz!`, `prove!`,
+The eight dimension crates depend only on `testes-core`. `testes-fuzz` implements
+`fuzz!` with an in-process seed-corpus runner (no coverage guidance, no libFuzzer;
+see `docs/decisions/0006-fuzz-macro-grammar.md`). `unit!`, `property!`, `prove!`,
 `conformance!`, `integration!`, `regression!`, `mutate!` are planned API, not
-implemented symbols.
+implemented symbols, unless their crate states otherwise.
