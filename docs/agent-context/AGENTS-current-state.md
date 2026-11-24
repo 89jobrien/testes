@@ -16,6 +16,10 @@ dependencies, added as a recorded exception to the prior std-only preference
 (see `docs/decisions/0001-layered-dependencies-and-native-testing-backends.md`).
 The eight dimension crates depend only on `testes-core`. `testes-fuzz` implements
 `fuzz!` with an in-process seed-corpus runner (no coverage guidance, no libFuzzer;
-see `docs/decisions/0006-fuzz-macro-grammar.md`). `unit!`, `property!`, `prove!`,
-`conformance!`, `integration!`, `regression!`, `mutate!` are planned API, not
-implemented symbols, unless their crate states otherwise.
+see `docs/decisions/0006-fuzz-macro-grammar.md`). `testes-model-check` implements
+`prove!` with a `ModelCheckBackend` port and no Kani dependency. `testes-integration`
+implements `integration!` (one scenario per invocation). `testes-regression`
+implements `regression!` as a native macro with identity checks and no backend.
+`conformance!` and `mutate!` are planned API, not implemented symbols, unless their
+crate states otherwise. `unit!` and `property!` are planned API, not implemented
+symbols, unless their crate states otherwise.
