@@ -6,7 +6,7 @@ Exercise untrusted-input boundaries with adversarial input and explicit safety o
 
 ## Declaration
 
-`TestSpecification::Fuzz` identifies target, oracles, and corpus artifacts. Scope includes resource limits and input interpretation. Planned macro: `testes::fuzz!` (not implemented). Intended backend: cargo-fuzz/libFuzzer in a dedicated fuzz package.
+`TestSpecification::Fuzz` identifies target, oracles, and corpus artifacts. Scope includes resource limits and input interpretation. `testes_fuzz::fuzz!` declares a fuzz test and runs its inline seed corpus through an in-process runner; the grammar is recorded in `docs/decisions/0006-fuzz-macro-grammar.md`. This runner is not coverage-guided and does not mutate inputs. Intended coverage-guided backend: cargo-fuzz/libFuzzer in a dedicated fuzz package (not implemented).
 
 ## Execution evidence
 
