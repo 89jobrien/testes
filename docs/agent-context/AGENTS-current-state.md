@@ -14,7 +14,6 @@ coverage in `testes-core` and CI running `--workspace` (see
 `miette::Diagnostic` — `miette`/`thiserror` are `testes-core`'s only
 dependencies, added as a recorded exception to the prior std-only preference
 (see `docs/decisions/0001-layered-dependencies-and-native-testing-backends.md`).
-The eight dimension crates depend only on `testes-core` and contain no macro or
-backend implementation yet — `unit!`, `property!`, `fuzz!`, `prove!`,
-`conformance!`, `integration!`, `regression!`, `mutate!` are planned API, not
-implemented symbols.
+`regression!` is implemented in `testes-regression` as a native macro with identity
+checks and no backend. `fuzz!`, `prove!`, `conformance!`, `integration!`, and
+`mutate!` are planned API, not implemented symbols.
