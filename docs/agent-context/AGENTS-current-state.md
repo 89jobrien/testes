@@ -14,7 +14,16 @@ coverage in `testes-core` and CI running `--workspace` (see
 `miette::Diagnostic` — `miette`/`thiserror` are `testes-core`'s only
 dependencies, added as a recorded exception to the prior std-only preference
 (see `docs/decisions/0001-layered-dependencies-and-native-testing-backends.md`).
-The eight dimension crates depend only on `testes-core` and contain no macro or
-backend implementation yet — `unit!`, `property!`, `fuzz!`, `prove!`,
-`conformance!`, `integration!`, `regression!`, `mutate!` are planned API, not
-implemented symbols.
+The eight dimension crates depend only on `testes-core`. `testes-fuzz` implements
+`fuzz!` with an in-process seed-corpus runner (no coverage guidance, no libFuzzer;
+see `docs/decisions/0006-fuzz-macro-grammar.md`). `testes-model-check` implements
+`prove!` with a `ModelCheckBackend` port and no Kani dependency. `testes-integration`
+implements `integration!` (one scenario per invocation). `testes-regression`
+implements `regression!` as a native macro with identity checks and no backend.
+`testes-mutation` implements `mutate!` as a declaration, evidence record, and claim
+assessment against an explicit `MutationPolicy`. It accepts a campaign supplied by a
+runner and runs no mutation campaign itself; cargo-mutants is not integrated (see
+`docs/decisions/0007-mutate-macro-grammar.md`). `conformance!` is planned API, not an
+implemented symbol. `unit!` and `property!` are implemented in `testes-unit` and
+`testes-property`, though some of their evidence fields are still `Unavailable`
+placeholders.

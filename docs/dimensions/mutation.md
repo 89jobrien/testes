@@ -6,7 +6,7 @@ Assess whether selected verification detects deliberately introduced behavioral 
 
 ## Declaration
 
-`TestSpecification::Mutation` identifies source selectors, operators, selected checks, and commands. Planned macro: `testes::mutate!` (not implemented). Intended initial backend: cargo-mutants; seeded faulty implementations are a separate planned mode. Launch campaigns through orchestration, never during macro expansion.
+`TestSpecification::Mutation` identifies source selectors, operators, selected checks, and commands. `testes_mutation::mutate!` declares it and records a campaign supplied by a runner (ADR-0007); the macro never runs a campaign. Intended initial backend: cargo-mutants, not yet integrated; seeded faulty implementations are a separate planned mode. Launch campaigns through orchestration, never during macro expansion.
 
 ## Execution evidence
 
@@ -14,11 +14,11 @@ Assess whether selected verification detects deliberately introduced behavioral 
 
 ## Acceptance
 
-Baseline must pass. Assessed count, missed results, and unresolved timeouts must satisfy explicit `MutationPolicy`. A catch must be attributable to the mutation rather than unrelated infrastructure failure.
+Baseline must pass. Assessed count, missed results, and unresolved timeouts must satisfy explicit `MutationPolicy`. A catch must be attributable to the mutation rather than unrelated infrastructure failure. `testes_mutation::assess` applies these rules; see ADR-0007 for the full list.
 
 ## Reporting
 
-Detection rate is caught / (caught + missed). Report other counts separately. Zero denominator means unavailable, not 100%. `detection_rate()` is arithmetic only and does not establish baseline validity or policy satisfaction.
+Detection rate is caught / (caught + missed). Report other counts separately. Zero denominator means unavailable, not 100%. `detection_rate()` is arithmetic only and does not establish baseline validity or policy satisfaction. The assessment reports a rate only when the baseline and policy are satisfied.
 
 ## Limits
 
