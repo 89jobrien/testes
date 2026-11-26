@@ -1,5 +1,7 @@
 # Developer handoff
 
+> **Status note:** The baseline below describes the initial single-package draft. The repository is now a nine-crate workspace, and wave 1 macros are merged. Read [current state](agent-context/AGENTS-current-state.md) for the present layout. The "Existing assets", "First bounded task", and "Next vertical slice" sections are historical until the owner rewrites them.
+
 ## Baseline
 
 Handoff baseline: `9923548431dbc5794f9d12e1ced80f4f40977488` on main. The initial core commit is `0b257213b68363f7de2f0e89ffbefa6ab2abb0ca`. This document adds guidance; it does not claim checks have run.

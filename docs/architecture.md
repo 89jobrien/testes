@@ -2,7 +2,7 @@
 
 ## Agreed design
 
-The eight entry points are `unit!`, `property!`, `fuzz!`, `prove!`, `conformance!`, `integration!`, `regression!`, and `mutate!`. They are planned APIs, not implemented symbols.
+The eight entry points are `unit!`, `property!`, `fuzz!`, `prove!`, `conformance!`, `integration!`, `regression!`, and `mutate!`. Seven are implemented. `conformance!` is planned API and not yet an implemented symbol. Per-crate status is in [current state](agent-context/AGENTS-current-state.md).
 
 Dependency direction:
 
